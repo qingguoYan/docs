@@ -128,3 +128,16 @@ If-None-Match: "abc123def456"
     连接方式: HTTP/1.0 需要建立多个 TCP 连接,HTTP/2.0 可以在一个 TCP 连接上处理多个请求。
     性能: HTTP/2.0 的性能更优,传输效率更高。
 
+# 跨域解决方案
+
+    CORS (Cross-Origin Resource Sharing): 这是一种基于 HTTP 头的机制,它允许服务器指定哪些源站有权限访问哪些资源。服务器需要设置正确的 CORS 头,客户端也需要处理 CORS 相关的响应。
+
+    如果需要在跨域请求中携带 cookies、HTTP 认证信息或客户端 SSL 证书等凭证,前端需要设置 withCredentials 属性为 true。
+    同时,服务器也需要在响应头中设置 Access-Control-Allow-Credentials: true。
+
+    代理: 在客户端和服务器之间设置一个代理服务器,由代理服务器来请求跨域资源,然后将结果返回给客户端。这样可以避免跨域问题,但需要额外的服务器资源。
+
+    JSONP (JSON with Padding): 这是一种使用 <script> 标签动态加载数据的方式。服务器返回一个函数调用,客户端提供一个回调函数来处理返回的数据。JSONP 只支持 GET 请求,不支持其他 HTTP 方法。
+
+    nginx 反向代理: 在服务器端使用 nginx 配置反向代理,将跨域的请求转发到目标服务器上,这样可以避免跨域问题。
+

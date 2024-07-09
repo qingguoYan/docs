@@ -75,6 +75,27 @@ if (
     2. 判断type是否相同,如果结点diff前后type不同,则删除当前结点与子节点,并创建新的结点
     3. 比较同层级结点,使用key作为唯一标识,达到结点复用的效果
 
+# React Portal
+
+> React Portal 是 React 提供的一个特性,它允许你将子节点渲染到父组件树之外的 DOM 节点中
+
+```js
+import ReactDOM from 'react-dom';
+
+const MyModal = () => {
+  return ReactDOM.createPortal(
+    <div className="modal">
+      <h2>This is a modal</h2>
+      <p>Content goes here...</p>
+    </div>,
+    document.getElementById('portal-root')
+  );
+};
+```
+    更好的 z-index 管理: 因为 Portal 渲染在页面的最顶层,所以可以更好地控制 z-index 顺序,避免被父组件的样式所覆盖。
+    更好的事件冒泡: Portal 中的事件会正确地冒泡到 DOM 树的根节点,而不会被父组件所阻止。
+    更好的性能: 因为 Portal 不会影响父组件的 DOM 结构,所以在某些情况下可以提高性能。
+
 # redux三大原则
 
     1. 单一数据源,整个应用的 全局 state 被储存在一棵 object tree 中，并且这个 object tree 只存在于唯一一个 store 中。

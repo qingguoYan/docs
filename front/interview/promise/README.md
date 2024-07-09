@@ -1,6 +1,4 @@
-# 面试题
-
-## 处理并发任务
+# 处理并发任务
 
 给你一段如下代码，要求我们在调用addTask函数时，要求我们有多个任务队列，使我们可以同时执行多个函数。
 
@@ -59,7 +57,7 @@ class SuperTask {
 }
 ```
 
-## setTimeout、promise、async await
+# setTimeout、promise、async await
 
 > await 后面的表达式会同步方式执行,await 下面的代码以微任务的方式执行
 

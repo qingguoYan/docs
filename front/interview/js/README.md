@@ -265,6 +265,135 @@ console.log(person.#name); // 报错: 无法直接访问私有字段
   ```
  pop 删除数组最后一个元素，返回最后一个元素
 
+# 如何实现图片懒加载
+
+## IntersectionObserver实现
+
+```js
+document.addEventListener('DOMContentLoaded', function() {
+  // 获取所有需要懒加载的图片元素
+  const lazyImages = document.querySelectorAll('img[data-src]');
+
+  // 创建 IntersectionObserver 实例
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const image = entry.target;
+          image.src = image.dataset.src;
+          image.removeAttribute('data-src');
+          observer.unobserve(image); // 停止观察当前图片
+        }
+      });
+    },
+    {
+      rootMargin: '50px', // 提前加载图片的距离
+      threshold: 0.1, // 可见比例阈值
+    }
+  );
+
+  // 观察所有需要懒加载的图片元素
+  lazyImages.forEach((image) => {
+    observer.observe(image);
+  });
+});
+```
+
+## 监听滚动事件
+
+```js
+document.addEventListener('DOMContentLoaded', function() {
+  // 获取所有需要懒加载的图片元素
+  const lazyImages = document.querySelectorAll('img[data-src]');
+
+  // 检查图片是否在可视区域内
+  function isInViewport(element) {
+    const rect = element.getBoundingClientRect(); //返回元素相对于可视窗口的大小与相对位置
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+
+  // 加载图片
+  function loadImage() {
+    lazyImages.forEach(function(image) {
+      if (isInViewport(image)) {
+        image.src = image.dataset.src;
+        image.removeAttribute('data-src');
+      }
+    });
+  }
+
+  // 监听滚动事件并加载图片
+  window.addEventListener('scroll', loadImage);
+  loadImage(); // 初次加载可见图片
+});
+```
+
+# 如何实现虚拟列表
+
+>实现虚拟列表的核心思想是监听容器的滚动事件，通过scrollTop就算出展示的startIndex、endIndex，取数组中[startIndex,endIndex]的数据
+>进行展示，展示使用transform:translate动态计算
+
+## 定高
+
+```js
+import React, { useState, useEffect, useRef } from 'react';
+
+const VirtualList = () => {
+  const listContainerRef = useRef(null);
+  const [itemHeight, setItemHeight] = useState(50); // 每个列表项的高度
+  const [totalItemCount, setTotalItemCount] = useState(1000); // 总列表项数量
+  const [items, setItems] = useState([]); // 当前可见区域内的列表项
+
+  useEffect(() => {
+    // 获取列表项的高度
+    const listItem = listContainerRef.current.children[0];
+    setItemHeight(listItem.offsetHeight);
+  }, []);
+
+  const handleScroll = () => {
+    const listContainer = listContainerRef.current;
+    const scrollTop = listContainer.scrollTop;
+    const visibleItemCount = Math.ceil(listContainer.offsetHeight / itemHeight);
+
+    const startIndex = Math.floor(scrollTop / itemHeight);
+    const endIndex = Math.min(startIndex + visibleItemCount, totalItemCount);
+
+    setItems(Array.from({ length: endIndex - startIndex }, (_, i) => i + startIndex));
+  };
+
+  return (
+    <div
+      ref={listContainerRef}
+      style={{ height: '300px', overflow: 'auto' }}
+      onScroll={handleScroll}
+    >
+      {items.map((index) => (
+        <div
+          key={index}
+          style={{
+            height: `${itemHeight}px`,
+            transform: `translateY(${index * itemHeight}px)`,
+          }}
+        >
+          Item {index}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default VirtualList;
+```
+
+
+# requestAnimationFrame 与 requestIdCallback
+
+
 # 代码题
 
 ## 对象引用

@@ -25,6 +25,7 @@
 * 面试系列
   * [CSS](front/interview/css/)
   * [React](front/interview/react/)
+  * [Promise](front/interview/promise/)
   * [JavaScript](front/interview/js/)
   * [TypeScript](front/interview/ts/)
   * [Webpack](front/interview/webpack/)
